@@ -1,0 +1,27 @@
+{
+  "name": "e-commerce-node",
+  "version": "1.0.0",
+  "description": "Node.js E-Commerce App REST API with MongoDB | Shopping API with Stripe &amp; JWT",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohamedo7x/E-Commerce-node-js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mohamedo7x/E-Commerce-node-js/issues"
+  },
+  "homepage": "https://github.com/mohamedo7x/E-Commerce-node-js#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.0.5"
+  }
+}
