@@ -6,7 +6,7 @@ import {user , register , login , logout , updateUser} from '../controller/userC
 router.get('/' ,user);
 router.post('/register' , register);
 router.post('/login' , login);
-router.post('/login' , logout);
+router.post('/logout' , logout);
 router.put('/update/:id' , updateUser);
 
 export default router;
