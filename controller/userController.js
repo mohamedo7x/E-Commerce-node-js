@@ -78,8 +78,8 @@ const login = asyncWrapper(async(req,res)=> {
 
 const logout = asyncWrapper(async(req,res)=> {
     console.log(req.headers.cookie)
-       if(req.headers.cookie === undefined) return res.status(400).json({ message : "You already logedout"});
-      await res.clearCookie("access_token").status(200).json({
+       if(req.headers.cookie === undefined) return res.status(400).json({ message : "Pleas login first"});
+      await res.clearCookie("access_token" , {sameSite : 'none' , secure : true}).status(200).json({
         message : "Logout Successfuly"
       });
 });
