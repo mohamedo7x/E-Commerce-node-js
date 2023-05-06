@@ -29,4 +29,6 @@ const sendMail = async(option) =>{
     await transport.sendMail(emailOTP);
 };
 
+export default sendMail;
+
 
