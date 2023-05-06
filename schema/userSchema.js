@@ -15,8 +15,9 @@ const userSchema = mongoose.Schema({
     },
     email:{
         type:String,
-        require:true,
-        unique:true,
+        required: [true, "The Email Is Required"],
+        trim: true,
+        unique: [true, "The Email Must be Unique"],
     },
     email_active : {
         type:Boolean,
@@ -29,6 +30,11 @@ const userSchema = mongoose.Schema({
         max : 300,
        
     },
+    changePasswordAt:Date,
+    PasswordRestCode:String,
+    PasswordRestCodeExpire:Date,
+    PasswordRestVerified:Boolean,
+
     photo : {
         type:String,
         default : ""
@@ -62,7 +68,6 @@ const userSchema = mongoose.Schema({
         type: Boolean,
         default: false
     }
- 
 })
 
 userSchema.virtual("id").get(() => {

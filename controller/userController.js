@@ -3,7 +3,6 @@ import User from "../schema/userSchema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from 'crypto';
-import nodemailer from 'nodemailer';
 
 import * as dotenv from "dotenv";
 dotenv.config();
@@ -29,7 +28,9 @@ const user = async (req, res) => {
             information: Data
         })
     } catch (error) {
+        if(error.message) await res.clearCookie("access_token" , {sameSite : "none",secure:true});
         res.status(500).json(error);
+       
     }
 
 };
