@@ -11,7 +11,7 @@ const createCat = asyncWrapper(async (req, res) => {
 
     /* Check If Token exisit and if he is admin */
     let token = req.cookies.access_token;
-    const data = await jwt.verify(token, process.env.SECRET_KEY);
+    const data =  jwt.verify(token, process.env.SECRET_KEY);
     if (!token) return res.status(400).json({
         message: 'Pleas login'
     });
@@ -38,10 +38,10 @@ const createCat = asyncWrapper(async (req, res) => {
 
     /* Create Cat */
 
-    const create = await new CategoriesShchema({
+    const create =  new CategoriesShchema({
         name,
         img
-    });
+    } , {__v : 0 });
     await create.save();
     res.status(201).json({
         message: "Categorie has been created",
@@ -58,9 +58,9 @@ const updateCat = asyncWrapper(async (req, res) => {
     if (!token_h) return res.status(400).json({
         message: "Pleas Loign"
     });
-    let token = await jwt.verify(token_h, process.env.SECRET_KEY);
+    let token =  jwt.verify(token_h, process.env.SECRET_KEY);
     if (!token.isAdmin) return res.status(400).json({
-        message: "this bage for ADMIN ONLY "
+        message: "this method for ADMIN ONLY "
     })
 
 
@@ -97,9 +97,9 @@ const deleteCat = asyncWrapper(async (req, res) => {
     if (!token_h) return res.status(400).json({
         message: "Pleas Loign"
     });
-    let token = await jwt.verify(token_h, process.env.SECRET_KEY);
+    let token =  jwt.verify(token_h, process.env.SECRET_KEY);
     if (!token.isAdmin) return res.status(400).json({
-        message: "this bage for ADMIN ONLY "
+        message: "this method for ADMIN ONLY "
     })
 
     let cat = req.params.name;
@@ -126,20 +126,21 @@ const showCat = asyncWrapper(async (req, res) => {
     if (!token_h) return res.status(400).json({
         message: "Pleas Loign"
     });
-    let token = await jwt.verify(token_h, process.env.SECRET_KEY);
+    let token =  jwt.verify(token_h, process.env.SECRET_KEY);
     if (!token.isAdmin) return res.status(400).json({
-        message: "this bage for ADMIN ONLY "
+        message: "this method for ADMIN ONLY "
     })
     const name = req.body.name;
+    if(!name) return res.status(400).json({message : "Enter name first."})
     const Data = await CategoriesShchema.findOne({
-        name
+        name : name
     });
+    if(!Data) return res.status(404).json({message : "Categorie not found" });
 
     res.status(200).json({
         ALERT: "Categorie",
-        info: [
-            Data
-        ]
+        info:Data
+        
     })
 
 });

@@ -1,4 +1,4 @@
-import Cat from '../schema/CategoriesShchema.js';
+
 import {showCat , createCat , updateCat , deleteCat , showCatAll} from '../controller/categories.js'
 import express from 'express';
 const route = express.Router();
