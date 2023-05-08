@@ -1,10 +1,12 @@
 import { rateLimit } from 'express-rate-limit';
 
 
-const limiter = rateLimit({
-    windowMs:1*60*1000, // 15min
-    max:100 ,//100 req
-    message : "Request limit exceeded. Try again later."
-})
+const apiLimiter = (msg , time =15 , maxLimit =5)=> {
+    rateLimit({
+        windowMs:time*60*1000,
+        max:maxLimit,
+        message:msg
+    })
+}
 
-export default limiter;
+export default apiLimiter;
