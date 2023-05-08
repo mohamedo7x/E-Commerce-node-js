@@ -14,9 +14,6 @@ const sendMail = async(option) =>{
     })
 
 
-
-
-
     const emailOTP = {
         from : "E-commerce",
         to:option.email,
