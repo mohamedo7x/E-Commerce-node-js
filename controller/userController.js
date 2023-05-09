@@ -3,9 +3,33 @@ import User from "../schema/userSchema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from 'crypto';
-
+import {v4 as uuidv4} from 'uuid';
+import {uploadSingleImage} from '../middleware/multer.js'
 import * as dotenv from "dotenv";
+import sharp from "sharp";
 dotenv.config();
+
+const uploadUserImage = uploadSingleImage("imgProfile")
+
+
+    const resizeImage = asyncWrapper(async(req , res , next)=> {
+        if(req.file){
+            const filename = `user--${uuidv4}--${Date.now()}.jpeg`;
+            await sharp(req.file.buffer)
+            .resize(600,600)
+            .toFormat('jpeg')
+            .jpeg({quality:95})
+            .toFile(`uploads/users/${filename}`)
+        }
+
+        //Save IMAGE
+        const api = process.env.API;
+        const basePath = `${req.protocol}://${req.get('host')}${filename}`
+        req.body.imgProfile = basePath;
+
+      next();  }
+
+    )
 
 const user = async (req, res) => {
 
@@ -203,5 +227,7 @@ export {
     logout,
     user,
     updateUser,
-    changePassword
+    changePassword,
+    resizeImage ,
+    uploadUserImage
 };
