@@ -16,10 +16,12 @@ const PORT = process.env.PORT || 5000;
 import subcat from './routes/subcategories.js'
 import userRoute from './routes/user.js';
 import CatRoute from './routes/categories.js';
+import Brand from './routes/brand.js';
 const api = process.env.API
 app.use(`/${api}/user` , userRoute);
 app.use(`/${api}/cat` , CatRoute);
 app.use(`/${api}/subcat` , subcat)
+app.use(`/${api}/brand` , Brand)
 // Server And DB connections
 const server = async ()=> {
     try {
