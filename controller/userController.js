@@ -44,7 +44,6 @@ const showAll = asyncWrapper(async (req, res) => {
     const Data = await User.find({}, {
         password: 0,
         __v: 0,
-        _id: 0
     }).limit(limit).skip(skip);
     res.status(200).json({
         page,
