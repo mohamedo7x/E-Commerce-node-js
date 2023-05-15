@@ -3,23 +3,28 @@ import User from "../schema/userSchema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from 'crypto';
-import {v4 as uuidv4} from 'uuid';
-import {uploadSingleImage} from '../middleware/multer.js'
-import * as dotenv from "dotenv";
+import {
+    v4 as uuidv4
+} from 'uuid';
+import {
+    uploadSingleImage
+} from '../middleware/multer.js'
 import sharp from "sharp";
-dotenv.config();
+
 
 const uploadUserImage = uploadSingleImage("imgProfile")
 
 
-    const resizeImage = asyncWrapper(async(req , res , next)=> {
-        if(req.file){
+const resizeImage = asyncWrapper(async (req, res, next) => {
+        if (req.file) {
             const filename = `user--${uuidv4}--${Date.now()}.jpeg`;
             await sharp(req.file.buffer)
-            .resize(600,600)
-            .toFormat('jpeg')
-            .jpeg({quality:95})
-            .toFile(`uploads/users/${filename}`)
+                .resize(600, 600)
+                .toFormat('jpeg')
+                .jpeg({
+                    quality: 95
+                })
+                .toFile(`uploads/users/${filename}`)
         }
 
         //Save IMAGE
@@ -27,10 +32,26 @@ const uploadUserImage = uploadSingleImage("imgProfile")
         const basePath = `${req.protocol}://${req.get('host')}${filename}`
         req.body.imgProfile = basePath;
 
-      next();  }
+        next();
+    }
 
-    )
+)
 
+const showAll = asyncWrapper(async (req, res) => {
+    let page = req.query.page * 1 || 1;
+    let limit = req.query.limit * 1 || 10;
+    let skip = (page - 1) * limit;
+    const Data = await User.find({}, {
+        password: 0,
+        __v: 0,
+        _id: 0
+    }).limit(limit).skip(skip);
+    res.status(200).json({
+        page,
+        limit,
+        Data
+    });
+})
 const user = async (req, res) => {
 
     try {
@@ -52,9 +73,12 @@ const user = async (req, res) => {
             information: Data
         })
     } catch (error) {
-        if(error.message) await res.clearCookie("access_token" , {sameSite : "none",secure:true});
+        if (error.message) await res.clearCookie("access_token", {
+            sameSite: "none",
+            secure: true
+        });
         res.status(500).json(error);
-       
+
     }
 
 };
@@ -98,10 +122,15 @@ const register = asyncWrapper(async (req, res) => {
 });
 
 const login = asyncWrapper(async (req, res) => {
-    if (req.headers.cookie !== "" && req.headers.cookie)
-        return res.status(400).json({
-            message: "You already logedin",
-        });
+
+    const cookie = req.cookies.access_token;
+    if (!cookie) return res.status(400).json({
+        message: 'Pleas Login First..'
+    });
+
+
+
+
     const {
         email,
         password
@@ -143,6 +172,7 @@ const login = asyncWrapper(async (req, res) => {
         httpOnly: true
     }).status(200).json({
         message: "Login Successfuly",
+        token
     });
 });
 
@@ -165,60 +195,11 @@ const logout = asyncWrapper(async (req, res) => {
 
 const updateUser = async (req, res) => {
 
-    try {
-        const istoken = req.cookies.access_token;
-        if (istoken === undefined) return await res.status(400).json({
-            message: "Pleas login"
-        });
-        const token = jwt.verify(istoken, process.env.SECRET_KEY);
-        const {
-            firtst_name,
-            last_name,
-            photo,
-            street,
-            apartement,
-            city,
-            zip,
-            country
-        } = req.body;
-
-        if (street !== undefined) {
-           await User.findByIdAndUpdate(
-                token.id, {
-                    $set: {
-                        street
-                    }
-                }
-            );
-        }
-
-        res.status(200).json({
-            message: "User updated"
-        })
-
-    } catch (error) {
-        res.status(500).json(error);
-    }
-
 };
 
 const changePassword = asyncWrapper(async (req, res) => {
-const iscookie = req.cookies.access_token;
-if(iscookie === undefined) return res.status(400).json({message : "pleas login"});
-const token = jwt.verify(iscookie , process.env.SECRET_KEY);
 
-const user =await User.findById(token.id);
 
-// Check if the current password is correct
-const isPassword = await bcrypt.compare(req.body.password , user.password);
-if(isPassword) return res.status(400).json({message : "this is current password"});
-
- // Generate a unique token for the password reset link
- const resToken = crypto.randomBytes(32).toString('hex');
-
- console.log(resToken);
-
-    
 });
 
 export {
@@ -228,6 +209,7 @@ export {
     user,
     updateUser,
     changePassword,
-    resizeImage ,
-    uploadUserImage
+    resizeImage,
+    uploadUserImage,
+    showAll
 };

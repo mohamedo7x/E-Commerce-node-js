@@ -37,7 +37,7 @@ const userSchema = mongoose.Schema({
 
     photo : {
         type:String,
-        default : ""
+        default : "https://img.uxwing.com/wp-content/themes/uxwing/download/peoples-avatars-thoughts/no-profile-picture-icon.png"
     },
     street: {
         type: String,

@@ -3,9 +3,11 @@ import * as dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import connection from './db/connect.js';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 dotenv.config();
 const app = express();
 app.use(express.json());
+app.use(cors());
 app.use(cookieParser());
 const PORT = process.env.PORT || 5000;
 
